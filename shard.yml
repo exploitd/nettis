@@ -1,0 +1,13 @@
+name: certomain
+version: 0.1.0
+
+authors:
+  - Halis Duraki <duraki@linuxmail.org>
+
+targets:
+  certomain:
+    main: src/certomain.cr
+
+crystal: 0.23.1
+
+license: MIT
