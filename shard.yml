@@ -6,7 +6,11 @@ authors:
 
 targets:
   certomain:
-    main: src/certomain.cr
+    main: src/nettis.cr
+
+dependencies:
+  crystagiri:
+    github: madeindjs/crystagiri
 
 crystal: 0.23.1
 

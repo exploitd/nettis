@@ -1,27 +1,32 @@
-# certomain
+# nettis 
 
-TODO: Write a description here
+nettis is BA-zone whois builder that should be cheap to produce.
 
 ## Installation
 
-TODO: Write installation instructions here
+```
+$ ...
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+
+
+```
 
 ## Development
 
-TODO: Write development instructions here
+Includes: **CHANGELOG**
 
 ## Contributing
 
-1. Fork it ( https://github.com/[your-github-name]/certomain/fork )
-2. Create your feature branch (git checkout -b my-new-feature)
-3. Commit your changes (git commit -am 'Add some feature')
-4. Push to the branch (git push origin my-new-feature)
+1. Fork it ( https://github.com/duraki/nettis/fork )
+2. Create your feature branch (git checkout -b nettis-is-fun)
+3. Commit your changes (git commit -am 'add: some stuff')
+4. Push to the branch (git push origin nettis-is-fun)
 5. Create a new Pull Request
 
 ## Contributors
 
-- [[your-github-name]](https://github.com/[your-github-name]) Halis Duraki - creator, maintainer
+- [[duraki]](https://github.com/duraki) Halis Duraki - creator, maintainer

@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-describe Certomain do
+describe Nettis do
   # TODO: Write tests
 
   it "works" do

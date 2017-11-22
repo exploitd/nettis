@@ -1,3 +1,3 @@
-module Certomain
+module Nettis 
   VERSION = "0.1.0"
 end
