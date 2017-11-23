@@ -1,6 +1,8 @@
 require "./nettis/version"
 require "./nettis/scanner"
+require "./nettis/http"
 require "./nettis/meta"
+require "./nettis/cli"
 
 require "http"
 require "crystagiri"
@@ -8,6 +10,8 @@ require "terminal_table"
 
 module Nettis 
   class Kernel
+
+    getter :cli
 
     def hey
       print <<-'EOF'
@@ -23,26 +27,16 @@ module Nettis
 
       EOF
 
-      Nettis::Meta.p "Welcome to Nettis! v#{Nettis::VERSION} --Zone builder for .BA domains" 
+      Nettis::Meta.p "Welcome to nettis! v#{Nettis::VERSION} --Zone builder for .BA domains\n" 
     end
 
-    def help
-      cmds = TerminalTable.new
-      cmds.headings = ["COMMAND", "ARGS", "RULE"]
-      cmds << ["last", "[#]", "Show last (max) 5 domains in zone"]
-      cmds << ["finger", "[domain]", "Whois domain and write textual from image"]
-      cmds << ["help", "", "Show this info"]
-      cmds << ["about", "", "Show about Nettis"]
-
-      puts cmds.render
-    end
-
-    def initialize
+    def cli 
+      Nettis::Cli.new
     end
 
   end
 end
 
-cli = Nettis::Kernel.new
-cli.hey
-cli.help
+nettis = Nettis::Kernel.new
+nettis.hey
+nettis.cli
