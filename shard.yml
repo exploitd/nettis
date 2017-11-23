@@ -13,11 +13,10 @@ dependencies:
     github: madeindjs/crystagiri
   terminal_table:
     github: benoist/terminal_table.cr
+  commander:
+    github: mrrooijen/commander
 
 crystal: 0.23.1
-
-#scripts:
-  #postinstall: make ext
 
 targets:
   scanner:
