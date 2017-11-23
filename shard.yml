@@ -1,17 +1,27 @@
-name: certomain
+name: nettis 
 version: 0.1.0
 
 authors:
   - Halis Duraki <duraki@linuxmail.org>
 
 targets:
-  certomain:
+  nettis:
     main: src/nettis.cr
 
 dependencies:
   crystagiri:
     github: madeindjs/crystagiri
+  terminal_table:
+    github: benoist/terminal_table.cr
 
 crystal: 0.23.1
+
+#scripts:
+  #postinstall: make ext
+
+targets:
+  scanner:
+    main: src/nettis/scanner.cr
+    http: src/nettis/http.cr
 
 license: MIT

@@ -1,2 +1,2 @@
 require "spec"
-require "../src/certomain"
+require "../src/nettis"

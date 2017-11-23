@@ -2,6 +2,12 @@
 
 nettis is BA-zone whois builder that should be cheap to produce.
 
+Optimization:
+
+* Grep value of found domain in a textual database
+* Get return shell code and append/upsert/etc
+* On [file change](http://entrproject.org/) push to remote (git)
+
 ## Installation
 
 ```
@@ -18,6 +24,10 @@ $ ...
 ## Development
 
 Includes: **CHANGELOG**
+
+Remotes:
+
+* Hostname to IP: [nic.ba](http://nic.ba/ajax.php?a=gethostbyname&host=nic.ba)
 
 ## Contributing
 
