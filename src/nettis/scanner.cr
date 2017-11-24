@@ -10,6 +10,33 @@ module Nettis
       @domains = Array(String).new
     end
 
+    # Extract x-site protection code for reuse
+    #
+    # This is same code that is bundled within domain origin as a CSRF
+    # protection. By filling the list of reusable codes, we will execute whois
+    # request attached with this data.
+    def token
+      doc = Crystagiri::HTML.from_url "#{Nettis::Http::ENDPOINT}/lat/menu/view/13"
+
+      doc.where_tag("input") do |tag|
+        return tag.node.attributes["value"].text # => Always [1st] input tag consists of token
+      end
+    end
+
+    def whois_(domain)
+      whois(domain)
+    end
+
+    def whois(domain)
+      Nettis::Meta.p "Doing a whois on domain: #{domain} [using: #{Nettis::Http::ENDPOINT}] ..."
+
+      t = token
+      Nettis::Meta.p "Found available token for use with hash [#{t}]! Go go."
+
+      doc = Nettis::Http.call("/lat/menu/view/13", "post")
+      p doc
+    end
+
     def last_domains(content)
       Nettis::Meta.p "Extracting last registered domains .."
 
@@ -17,7 +44,7 @@ module Nettis
         if i == 1 && !l.strip.empty? 
           l.strip.split(".ba").each.with_index do |domain, j|
             next if j == 5 # => probably a bug (aka no domain found)
-            Nettis::Meta.p "Found domain: #{domain}.ba"
+            Nettis::Meta.p "Found latest registered domain: #{domain}.ba"
             @domains << "#{domain}.ba"
           end
         end

@@ -31,7 +31,8 @@ module Nettis
           cmd.short = "Execute a whois on domain and OCR-to-ASCII."
           cmd.long = cmd.short
           cmd.run do |options, arguments|
-            arguments # => ["https://github.com/duraki"]
+              exit if arguments.empty?
+              Nettis::Scanner.new.whois_(arguments[0])
           end
         end
 
