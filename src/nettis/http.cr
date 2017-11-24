@@ -13,7 +13,7 @@ module Nettis
     # Prepare endpoint with a gateway
     def self.call(uri, met)
       uri = URI.parse("#{ENDPOINT}/#{uri}")
-      @@response = met.compare("post", true) ? HTTP::Client.post(uri) : HTTP::Client.get(uri)
+      @@response = met.compare("post") ? HTTP::Client.post(uri) : HTTP::Client.get(uri)
     end
 
     def set_ct(request, ct)
