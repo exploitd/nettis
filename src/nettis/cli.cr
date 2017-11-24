@@ -22,7 +22,7 @@ module Nettis
           cmd.long = cmd.short
           cmd.run do |options, arguments|
             exit if arguments.empty?
-            Nettis::Scanner.find_(arguments[0].to_i)
+            Nettis::Scanner.new.find_(arguments[0].to_i)
           end
         end
 
