@@ -1,5 +1,6 @@
 require "http/client"
 require "uri"
+require "crest"
 
 module Nettis
   module Http

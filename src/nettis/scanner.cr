@@ -15,6 +15,9 @@ module Nettis
     # This is same code that is bundled within domain origin as a CSRF
     # protection. By filling the list of reusable codes, we will execute whois
     # request attached with this data.
+    #
+    # xxx: extract token from [current] whois (if exists)
+    #      , as seen previously there is another input on each completed whois
     def token
       doc = Crystagiri::HTML.from_url "#{Nettis::Http::ENDPOINT}/lat/menu/view/13"
 
