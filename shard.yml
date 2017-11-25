@@ -15,6 +15,8 @@ dependencies:
     github: benoist/terminal_table.cr
   commander:
     github: mrrooijen/commander
+  crest:
+    github: mamantoha/crest
 
 crystal: 0.23.1
 

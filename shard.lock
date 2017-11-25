@@ -4,6 +4,10 @@ shards:
     github: mrrooijen/commander
     version: 0.3.3
 
+  crest:
+    github: mamantoha/crest
+    version: 0.9.2
+
   crystagiri:
     github: madeindjs/crystagiri
     version: 0.3.2
