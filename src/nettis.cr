@@ -3,6 +3,7 @@ require "./nettis/scanner"
 require "./nettis/http"
 require "./nettis/meta"
 require "./nettis/cli"
+require "./nettis/source/nic"
 
 require "http"
 require "crystagiri"
