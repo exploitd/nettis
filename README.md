@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo300.png" />
+</p>
+
 # nettis 
 
 nettis is BA-zone whois builder that should be cheap to keep alive and cost
