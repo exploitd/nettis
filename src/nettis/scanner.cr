@@ -4,6 +4,7 @@ module Nettis
   class Scanner
 
     property :req
+    property cookie= String.new #= String.new
 
     def initialize
       @ext_zone = Array(Int32).new
@@ -16,10 +17,18 @@ module Nettis
     # protection. By filling the list of reusable codes, we will execute whois
     # request attached with this data.
     #
+    # Also extract cookie since `PHPSESSID` is directly used with token. Later
+    # on we reuse both of this values to get whois data.
+    #
     # xxx: extract token from [current] whois (if exists)
     #      , as seen previously there is another input on each completed whois
     def token
-      doc = Crystagiri::HTML.from_url "#{Nettis::Http::ENDPOINT}/lat/menu/view/13"
+      client = HTTP::Client.new URI.parse(Nettis::Http::ENDPOINT)
+      c = client.get "/lat/menu/view/13" # => tokens are on whois page
+    
+      self.cookie = c.cookies["PHPSESSID"].value.to_s # => Extract cookie from same req
+
+      doc = Crystagiri::HTML.new c.body
 
       doc.where_tag("input") do |tag|
         return tag.node.attributes["value"].text # => Always [1st] input tag consists of token
@@ -34,9 +43,9 @@ module Nettis
       Nettis::Meta.p "Doing a whois on domain: #{domain} [using: #{Nettis::Http::ENDPOINT}] ..."
 
       t = token
-      Nettis::Meta.p "Found available token for use with hash [#{t}]! Go go."
+      Nettis::Meta.p "Found available token for use with hash [#{t}] and cookie `#{@cookie}`! Go go."
 
-      doc = Nettis::Http.call("/lat/menu/view/13", "post")
+      doc = Nettis::Http.curl_whois(domain, 1, t, @cookie)
       p doc
     end
 
