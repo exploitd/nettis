@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo300.png" />
+  <img src="docs/logo300.png" width="250px" height="auto" />
 </p>
 
 # nettis 
