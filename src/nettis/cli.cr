@@ -21,8 +21,7 @@ module Nettis
           cmd.short = "Show last (max) 5 domains registered in zone."
           cmd.long = cmd.short
           cmd.run do |options, arguments|
-            exit if arguments.empty?
-            Nettis::Scanner.new.find_(arguments[0].to_i)
+            Nettis::Scanner.new.get_domains 
           end
         end
 
@@ -31,8 +30,8 @@ module Nettis
           cmd.short = "Execute a whois on domain and OCR-to-ASCII."
           cmd.long = cmd.short
           cmd.run do |options, arguments|
-              exit if arguments.empty?
-              Nettis::Scanner.new.whois_(arguments[0])
+            exit if arguments.empty?
+            Nettis::Scanner.new.get_whois(arguments[0])
           end
         end
 

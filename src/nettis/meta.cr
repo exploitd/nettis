@@ -14,9 +14,16 @@ module Nettis
       print "#{str}\n"
     end
 
-    # Parse domain to type for NIC usage
-    def self.parse_domain_to_whois(domain)
-        
+    def self.domain_ext(domain)
+      ext = URI.parse(domain).to_s.split('.')
+      ext.shift           # => remove domain name
+      ".#{ext.join(".")}" # => return proper ".ext"
+    end
+
+    # Map domain to zone extension for NIC usage
+    # e.g. nic.ba => 1
+    def self.parse_domain_to_type(domain)
+      ZONE_EXTENSION[self.domain_ext(domain)]
     end
 
   end
