@@ -4,7 +4,12 @@ require "./nettis/http"
 require "./nettis/meta"
 require "./nettis/cli"
 require "./nettis/source/nic"
+require "./nettis/record/parse/nic/parser"
 
+# => Exceptions
+require "./nettis/exceptions/html"
+
+# => Dependencies
 require "http"
 require "crystagiri"
 require "terminal_table"
