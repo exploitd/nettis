@@ -51,7 +51,8 @@ $ (nettis) ~ shards build
 ## Usage
 
 Once you compiled binaries, you have a command line interface to do whatever you
-prefer, either `whois` or enumurate new domains.
+prefer, either `whois` or enumurate new domains. Read full documentation
+[here](#documentation).
 
 Example:
   
@@ -98,6 +99,14 @@ Welcome to nettis! v0.1.0 --Zone builder for .BA domains
   Flags:
     -h, --help  # Help for this command. default: 'false'.
 
+```
+
+## Documentation
+
+To generate API and code docs use `yard` with specified code path.
+
+```
+$ yardoc src/**/*.cr
 ```
 
 ## Development

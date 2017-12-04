@@ -1,16 +1,29 @@
 module Nettis
+
+  # Main object to source NIC. This is official origin of country Bosnia and
+  # Herzegovina. The `nic` was born at `UTIC` (that is - [Univerzitetski
+  # tele-informatički centar]) and is official registrator of domain.
+  # @see [https://en.wikipedia.org/wiki/.ba]
+  #
+  # @attr [String] cookie cookie token[s]
+  # @attr [String] t session token[s]
+  # @attr [Array] ext_zone a list of extensions mapped to ary 
+  # @attr [Array] domains list of string of domain names
+  # @attr [Nic::Parser] parser extraction used for this service
   class Nic
 
+    # Supposed service ID.
     SOURCE_NAME = "NIC"
 
+    # Supposed service endpoint.
     ENDPOINT  = "http://nic.ba" # => jfc they still on http!
+
+    # Supposed service SSL trigger.
     SSL       = 0
 
-    # Request headers
     property cookie = String.new # => Cookie
     property t      = String.new # => Token
 
-    # Domain status
     property ext_zone = Array(Int32).new
     property domains  = Array(String).new
 
@@ -21,7 +34,7 @@ module Nettis
       token
     end
 
-    # Extract x-site protection code for reuse
+    # Extract x-site protection code for reuse on given source.
     #
     # This is same code that is bundled within domain origin as a CSRF
     # protection. By filling the list of reusable codes, we will execute whois
@@ -30,8 +43,7 @@ module Nettis
     # Also extract cookie since `PHPSESSID` is directly used with token. Later
     # on we reuse both of this values to get whois data.
     #
-    # xxx: extract token from [current] whois (if exists)
-    #      , as seen previously there is another input on each completed whois
+    # @return [String]
     def token
       client = HTTP::Client.get URI.parse(ENDPOINT + "/lat/menu/view/13")
       @cookie = parser.parse_session(client)
@@ -40,18 +52,26 @@ module Nettis
       @t = parser.parse_token(doc)
     
       Nettis::Meta.p "Found available token for use with hash [#{@t}] and cookie `#{@cookie}`! Go go."
+      @t
     end
 
     # Set cookie in use. Some client requests requires token + session match
-    # so this method should prepare that
+    # so this method should prepare that.
+    #
+    # @param [Net::HTTP.Client] client request client
     def set_cookie(client)
       client.before_request do |req|
         req.cookies << HTTP::Cookie.new("PHPSESSID", @cookie)
       end
     end
 
+    # Execute a whois on the current source. Requires a domain on which the
+    # whois shall be done.
+    #
+    # @param [String] domain URL domain
+    # @return [Object] whois info 
     def whois(domain)
-      type = parser.domain_to_type(domain)
+      type   = parser.domain_to_type(domain)
       domain = parser.parse_domain_without_tld(domain)
 
       client = HTTP::Client.new URI.parse(ENDPOINT)
@@ -65,6 +85,10 @@ module Nettis
       # xxx: Save image and process to ocr
     end
 
+    # Extract last five registered domains on project source. On `nic` it is
+    # bundled-on at the frontend.
+    # 
+    # @return [Hash]
     def last_five
       Nettis::Meta.p "Scanning for last domains registered on #{ENDPOINT}"
 
@@ -89,20 +113,6 @@ module Nettis
           end
         end
       end
-    end
-
-    def zone_status(content)
-      Nettis::Meta.p "Extracting status for zone extension .."
-
-      content.each_line.with_index do |l, i|
-        @ext_zone << l.gsub(/[^\d]/, "").to_i32 if i == 4  # => .ba
-        @ext_zone << l.gsub(/[^\d]/, "").to_i32 if i == 12 # => .org.ba
-        @ext_zone << l.gsub(/[^\d]/, "").to_i32 if i == 20 # => .net.ba
-        @ext_zone << l.gsub(/[^\d]/, "").to_i32 if i == 28 # => .gov.ba
-        @ext_zone << l.gsub(/[^\d]/, "").to_i32 if i == 36 # => .edu.ba
-      end
-
-      Nettis::Meta.p "Status: BA - #{@ext_zone[0]} # ORG.BA #{@ext_zone[1]} # NET.BA #{@ext_zone[2]} # GOV.BA #{@ext_zone[3]} # EDU.BA #{@ext_zone[4]}"
     end
 
   end
