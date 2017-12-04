@@ -14,7 +14,10 @@ require "http"
 require "crystagiri"
 require "terminal_table"
 
+# Load & initialize kernel module. Creates a CLI instance for usage.
 module Nettis 
+
+  # Kernel class for nettis. Used only to initialize an entry point.
   class Kernel
 
     getter :cli
