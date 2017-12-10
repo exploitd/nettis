@@ -7,20 +7,24 @@ module Nettis
   class Cli
 
     # @return tty
-    property  :tty
+    property  tty    = Commander::Command.new
+    property scanner = Nettis::Scanner.new
 
     def initialize
 
       # Extend `stdout` with commands and main instance. Main instance can
       # contain a parent command. Spawned instance should parse automatically
       # given input. As such, just call `scanner` and appropriate method.
-      @tty = Commander::Command.new do |cmd|
+      tty = Commander::Command.new do |cmd|
 
-        # Main instance.
-        cmd.use = "nettis"
+        # Declare CLI.
+        cmd.use  = Nettis::Kernel::APPLICATION_NAME
+        cmd.long = Nettis::Kernel::APPLICATION_DESC
+
+        puts cmd.help
 
         cmd.run do |options, arguments|
-          #p arguments              # => Array(String)
+          p arguments              # => Array(String)
           puts cmd.help             # => Render help screen
         end
 
@@ -30,7 +34,10 @@ module Nettis
           cmd.short = "Show last (max) 5 domains registered in zone."
           cmd.long = cmd.short
           cmd.run do |options, arguments|
-            Nettis::Scanner.new.get_domains 
+            @scanner.get_domains 
+            arguments
+            #p Nettis::Scanner.get_domains
+            #Nettis::Scanner.new.get_domains 
           end
         end
 
@@ -40,7 +47,6 @@ module Nettis
           cmd.short = "Execute a whois on domain and OCR-to-ASCII."
           cmd.long = cmd.short
           cmd.run do |options, arguments|
-            exit if arguments.empty?
             Nettis::Scanner.new.get_whois(arguments[0])
           end
         end
@@ -56,7 +62,7 @@ module Nettis
         end
       end
 
-      Commander.run(@tty, ARGV)
+      Commander.run(tty, ARGV)
     end
 
     def tty
