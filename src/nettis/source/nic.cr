@@ -16,10 +16,10 @@ module Nettis
     SOURCE_NAME = "NIC"
 
     # Supposed service endpoint.
-    ENDPOINT  = "http://nic.ba" # => jfc they still on http!
+    ENDPOINT    = "http://nic.ba" # => jfc they still on http!
 
     # Supposed service SSL trigger.
-    SSL       = 0
+    SSL         = 0
 
     property cookie = String.new # => Cookie
     property t      = String.new # => Token
@@ -80,7 +80,9 @@ module Nettis
       # => Whois request to get a generated image
       c = client.post_form "/lat/menu/view/13", "whois_input=#{@t}&whois_select_name=#{domain}&whois_select_type=#{type}&submit=1&submit_check=on" 
       doc = Crystagiri::HTML.new c.body
-      parser.parse_whois_image(doc)
+      img = parser.parse_whois_image(doc)
+    
+      Nettis::Meta.p "Found whois image: [#{img}] :)`."
     
       # xxx: Save image and process to ocr
     end
