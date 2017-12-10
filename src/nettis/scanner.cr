@@ -40,6 +40,14 @@ module Nettis
       c = Nettis::Http.domains
     end
 
+    # Execute `status` on TLD database
+    # @see [status]
+    # 
+    # @return [Object]
+    def status
+      c = Nettis::Http.status 
+    end
+
     # @def.ps
     # Possible sources are defined as a way to entry point from one can extract actions.
 
@@ -47,5 +55,10 @@ module Nettis
     # Query and response protocol that is widely used for querying databases that store 
     # the registered users or assignees of an Internet resource, such as a 
     # domain name, an IP address block
+
+    # @def.status
+    # Extract total domains registered on official zone register, in this case
+    # `NIC/UTIC`. Nettis should hit the number of the list, aka it should search
+    # so deep to find all possible domains.
   end
 end

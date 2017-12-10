@@ -19,7 +19,8 @@ class Nic
     property cookie    =String.new
     property phpsessid =String.new
 
-    property domains   =Array(String).new
+    property domains =Array(String).new
+    property tld     =Array(Int32).new
    
     # Extract cookie.
     def parse_session(client)
@@ -56,25 +57,44 @@ class Nic
     end
 
     # Extract last domain pool size.
+    #
+    # @param [Crystagiri::HTML] body
     def parse_zone_status(body)
-      puts body.at_class("right_text_nromal_td")
+      @tld << sidebar_oc(body, 1).content.gsub(/[^\d]/, "").to_i32 # => .ba
+      @tld << sidebar_oc(body, 3).content.gsub(/[^\d]/, "").to_i32 # => .org.ba
+      @tld << sidebar_oc(body, 5).content.gsub(/[^\d]/, "").to_i32 # => .net.ba
+      @tld << sidebar_oc(body, 7).content.gsub(/[^\d]/, "").to_i32 # => .gov.ba
+      @tld << sidebar_oc(body, 9).content.gsub(/[^\d]/, "").to_i32 # => .edu.ba
 
-      content.each_line.with_index do |l, i|
-        @tld << l.gsub(/[^\d]/, "").to_i32 if i == 4  # => .ba
-        @tld << l.gsub(/[^\d]/, "").to_i32 if i == 12 # => .org.ba
-        @tld << l.gsub(/[^\d]/, "").to_i32 if i == 20 # => .net.ba
-        @tld << l.gsub(/[^\d]/, "").to_i32 if i == 28 # => .gov.ba
-        @tld << l.gsub(/[^\d]/, "").to_i32 if i == 36 # => .edu.ba
-      end
+      Nettis::Meta.p "Got status! Hol'on ..."
 
-      Nettis::Meta.p "Status: BA - #{@ext_zone[0]} # ORG.BA #{@ext_zone[1]} # NET.BA #{@ext_zone[2]} # GOV.BA #{@ext_zone[3]} # EDU.BA #{@ext_zone[4]}"
+      t = TerminalTable.new
+      t.headings = ["Zone         ", "Total domains"]
+      t << [Nettis::Meta::ZONE_EXTENSION.key(1), @tld[0]]
+      t << [Nettis::Meta::ZONE_EXTENSION.key(2), @tld[1]]
+      t << [Nettis::Meta::ZONE_EXTENSION.key(3), @tld[2]]
+      t << [Nettis::Meta::ZONE_EXTENSION.key(4), @tld[3]]
+      t << [Nettis::Meta::ZONE_EXTENSION.key(6), @tld[4]]
+
+      puts t.render
+
+      @tld
     end
 
+    # Get first sidebar occurence
+    # 
+    # @param [Crystagiri::HTML] body
+    # @return [Crystagiri::Tag]
     def first_sidebar_oc(body)
       body.where_class("right_text_normal_td") { |t| return t }
       raise HtmlException.new(tag="right_text_normal_td")
     end
 
+    # Get sidebar occurence by index id
+    # 
+    # @param [Crystagiri::HTML] body
+    # @param [Int] index
+    # @return [Crystagiri::Tag]
     def sidebar_oc(body : Crystagiri::HTML, index)
       i = 0
       body.where_class("right_text_normal_td") do |tag|
@@ -84,6 +104,10 @@ class Nic
       raise HtmlException.new(tag="right_text_normal_td")
     end
 
+    # Extract new or latest domains from this source
+    #
+    # @param [Crystagiri::HTML] body
+    # @return [Array] domains
     def parse_new_domains(body)
       tag = first_sidebar_oc(body)
       t = sidebar_oc(body, 11)
@@ -91,13 +115,15 @@ class Nic
       t.node.text.each_line.with_index do |l, i|
         if i == 1 && !l.strip.empty?
           l.strip.split(".ba").each.with_index do |domain, j|
-            next if j == 5 # => probably a bug (aka no domain found)
+            return if j > 4 # => Extract up to 5 domains
 
             Nettis::Meta.p "Found latest registered domain: #{domain}.ba"
             @domains << "#{domain}.ba"
           end
         end
       end
+
+      @domains
     end
 
   end

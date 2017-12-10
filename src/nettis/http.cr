@@ -34,6 +34,15 @@ module Nettis
       nic.last_five
     end
 
+    # Get last domains database status on zone for which nettis is configured for.
+    #
+    # @return [Object]
+    def self.status
+      Nettis::Meta.p "Extracting domain status [using: #{Nettis::Nic::ENDPOINT}] ..."
+      nic = Nettis::Nic.new
+      nic.status
+    end
+
     # Run a process or command line and return output.
     # 
     # @param [String] cmd command to run

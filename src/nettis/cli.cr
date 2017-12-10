@@ -21,11 +21,22 @@ module Nettis
         cmd.use  = Nettis::Kernel::APPLICATION_NAME
         cmd.long = Nettis::Kernel::APPLICATION_DESC
 
-        puts cmd.help
+        #puts cmd.help
 
         cmd.run do |options, arguments|
           p arguments              # => Array(String)
           puts cmd.help             # => Render help screen
+        end
+
+        cmd.commands.add do |cmd|
+          cmd.use = "status"
+          
+          cmd.short = "Show status about top-level domain [.BA]"
+          cmd.long = cmd.short
+          cmd.run do |options, arguments|
+            @scanner.status
+            arguments
+          end
         end
 
         cmd.commands.add do |cmd|
