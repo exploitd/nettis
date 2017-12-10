@@ -95,27 +95,15 @@ module Nettis
       Nettis::Meta.p "Scanning for last domains registered on #{ENDPOINT}"
 
       doc = Crystagiri::HTML.from_url "#{ENDPOINT}"
-      parser.parse_new_domains(doc)
+      domains = parser.parse_new_domains(doc)
+    end
 
-      #doc.where_class("right_text_normal_td") do |tag|
-        #self.zone_status(tag.content) if tag.content.match(/BA domena/)
-        #self.last_domains(tag.content) if tag.content.match(/.ba/)
-      #end
+    def status
+      Nettis::Meta.p "Scanning for last domain status on #{ENDPOINT}"
+
+      doc = Crystagiri::HTML.from_url "#{ENDPOINT}"
+      tld = parser.parse_zone_status(doc)
     end
     
-    def last_domains(content)
-      Nettis::Meta.p "Extracting last registered domains .."
-
-      content.each_line.with_index do |l, i|
-        if i == 1 && !l.strip.empty? 
-          l.strip.split(".ba").each.with_index do |domain, j|
-            next if j == 5 # => probably a bug (aka no domain found)
-            Nettis::Meta.p "Found latest registered domain: #{domain}.ba"
-            @domains << "#{domain}.ba"
-          end
-        end
-      end
-    end
-
   end
 end
