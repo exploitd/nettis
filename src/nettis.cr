@@ -6,6 +6,10 @@ require "./nettis/cli"
 require "./nettis/source/nic"
 require "./nettis/record/parse/nic/parser"
 
+# => Services
+require "./nettis/notifications/repository/storage"
+require "./nettis/notifications/repository/downloader"
+
 # => Exceptions
 require "./nettis/exceptions/html"
 
