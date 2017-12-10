@@ -27,6 +27,7 @@ module Nettis
     property ext_zone = Array(Int32).new
     property domains  = Array(String).new
 
+    # => Object[s] init
     property parser   = Nic::Parser.new
 
     def initialize
@@ -71,20 +72,26 @@ module Nettis
     # @param [String] domain URL domain
     # @return [Object] whois info 
     def whois(domain)
-      type   = parser.domain_to_type(domain)
-      domain = parser.parse_domain_without_tld(domain)
+      Nettis::Meta.p "Doing a whois on a URL #{domain} with info given on #{ENDPOINT}"
 
       client = HTTP::Client.new URI.parse(ENDPOINT)
       set_cookie(client)
 
       # => Whois request to get a generated image
-      c = client.post_form "/lat/menu/view/13", "whois_input=#{@t}&whois_select_name=#{domain}&whois_select_type=#{type}&submit=1&submit_check=on" 
+      c = client.post_form "/lat/menu/view/13", 
+        "whois_input=#{@t}&\
+         whois_select_name=#{parser.parse_domain_without_tld(domain)}&\
+         whois_select_type=#{parser.domain_to_type(domain)}&\
+         submit=1&\
+         submit_check=on" 
+
       doc = Crystagiri::HTML.new c.body
       img = parser.parse_whois_image(doc)
     
       Nettis::Meta.p "Found whois image: [#{img}] :)`."
     
       # xxx: Save image and process to ocr
+      Nettis::Downloader.new(img.to_s, "/tmp/").download
     end
 
     # Extract last five registered domains on project source. On `nic` it is
@@ -98,6 +105,9 @@ module Nettis
       domains = parser.parse_new_domains(doc)
     end
 
+    # Extract status or zone statistics based on `nic/utic` margins.
+    # 
+    # @return [Hash]
     def status
       Nettis::Meta.p "Scanning for last domain status on #{ENDPOINT}"
 
