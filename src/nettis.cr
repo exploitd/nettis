@@ -22,6 +22,9 @@ module Nettis
 
     getter :cli
 
+    APPLICATION_NAME = "nettis"
+    APPLICATION_DESC = "Shodan for Bosnia and Herzegovina!"
+
     def hey
       print <<-'EOF'
 
