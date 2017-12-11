@@ -23,11 +23,12 @@ module Nettis
 
           File.open(File.join(@out, fn), "wb") do |file|
             file.puts client.body
-            puts "#{client.status_message}: #{@url}"
+            puts "Download #{client.status_message}: #{@url}"
           end
 
       else
-        puts "#{client.status_message}: #{@url}"
+
+        puts "Download #{client.status_message}: #{@url}"
       end
 
     end
