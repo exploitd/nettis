@@ -87,11 +87,21 @@ module Nettis
 
       doc = Crystagiri::HTML.new c.body
       img = parser.parse_whois_image(doc)
+
+      return if img.nil?
     
       Nettis::Meta.p "Found whois image: [#{img}] :)`."
     
       # xxx: Save image and process to ocr
       Nettis::Downloader.new(img.to_s, "/tmp/").download
+      w = whois_plain("/tmp/#{Nettis::Downloader::DEFAULT_WHOIS_IMG}")
+      w << domain
+    end
+
+    def whois_plain(image : String)
+      tmp = "/tmp/resized.png"
+      Nettis::NOCR::Enhance.resize(image, 1000, 1000, tmp)
+      parser.whois_text(Nettis::NOCR::Read.from_image(tmp, "bos").to_s)
     end
 
     # Extract last five registered domains on project source. On `nic` it is

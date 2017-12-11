@@ -48,12 +48,42 @@ class Nic
     # Extract whois image from the body.
     def parse_whois_image(body)
       body.where_tag("img") do |tag|
-
         if tag.node.attributes[1].to_s.upcase.match(/#{RIMG_NAME.upcase}/)
-        return tag.node.attributes[0].content.to_s
+          return tag.node.attributes[0].content.to_s
+        end
+      end
+    end
+
+    def whois_text(content : String)
+      whois = Array(String).new
+
+      content.each_line.with_index do |l, i|
+        if l.match(/Administrativni/)
+          whois << content.split("\n")[i+1] # => User / Owner
+          whois << content.split("\n")[i+2] # => Street address
+          whois << content.split("\n")[i+3] # => Zip code, City 
+          whois << content.split("\n")[i+3] # => Country
+        end
+
+        if l.match(/Korisnik/)
+          whois << content.split("\n")[i+1] # => Organization
+          whois << content.split("\n")[i+2] # => Street
+          whois << content.split("\n")[i+3] # => Zip code, City
+          whois << content.split("\n")[i+4] # => Country
+        end
       end
 
+      mails = emails(content)
+      mails.each do |m|
+        whois << m.string
       end
+
+      p whois
+    end
+
+    def emails(txt)
+      reg = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i
+      txt.scan(reg).uniq
     end
 
     # Extract last domain pool size.
