@@ -43,16 +43,5 @@ module Nettis
       nic.status
     end
 
-    # Run a process or command line and return output.
-    # 
-    # @param [String] cmd command to run
-    # @return [String]
-    def self.run(cmd)
-      o = IO::Memory.new
-      Process.run(cmd, shell: true, output: o) 
-      o.close
-      o.to_s
-    end
-
  end
 end

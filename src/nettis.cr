@@ -10,6 +10,10 @@ require "./nettis/record/parse/nic/parser"
 require "./nettis/notifications/repository/storage"
 require "./nettis/notifications/repository/downloader"
 
+# => OCR
+require "./nettis/record/nocr/enhance.cr"
+require "./nettis/record/nocr/read.cr"
+
 # => Exceptions
 require "./nettis/exceptions/html"
 
