@@ -3,8 +3,11 @@ require "./nettis/scanner"
 require "./nettis/http"
 require "./nettis/meta"
 require "./nettis/cli"
+
+# => Parsers
 require "./nettis/source/nic"
 require "./nettis/record/parse/nic/parser"
+require "./nettis/record/parse/nic/tags"
 
 # => Services
 require "./nettis/notifications/repository/storage"
