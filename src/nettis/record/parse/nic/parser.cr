@@ -58,31 +58,26 @@ class Nic
       whois = Array(String).new
 
       content.each_line.with_index do |l, i|
-        if l.match(/Administrativni/)
-          whois << content.split("\n")[i+1] # => User / Owner
-          whois << content.split("\n")[i+2] # => Street address
-          whois << content.split("\n")[i+3] # => Zip code, City 
-          whois << content.split("\n")[i+3] # => Country
+        if l.match(/#{Nic::HOTWORDS::WHOIS_ADMINISTRATION}/)
+          whois << content.split("\n")[i+1] || "Can't find domain owner" # => User / Owner
+          whois << content.split("\n")[i+2] || "Can't find street address" # => Street address
+          whois << content.split("\n")[i+3] || "Can't find city" # => Zip code, City 
+          whois << content.split("\n")[i+3] || "Can't find country" # => Country
         end
 
-        if l.match(/Korisnik/)
-          whois << content.split("\n")[i+1] # => Organization
-          whois << content.split("\n")[i+2] # => Street
-          whois << content.split("\n")[i+3] # => Zip code, City
-          whois << content.split("\n")[i+4] # => Country
+        if l.match(/#{Nic::HOTWORDS::WHOIS_USER}/)
+          whois << content.split("\n")[i+1] || "Can't find domain"  # => Organization
+          whois << content.split("\n")[i+2] || "Can't find street" # => Street
+          whois << content.split("\n")[i+3] || "Can't find city" # => Zip code, City
+          whois << content.split("\n")[i+4] || "Can't find country" # => Country
         end
       end
 
-      mails = emails(content)
-      mails.each do |m|
-        whois << m.string
-      end
-
-      p whois
+      whois
     end
 
     def emails(txt)
-      reg = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i
+      reg = /(.+)@(.+).(.+)/i
       txt.scan(reg).uniq
     end
 
@@ -116,8 +111,8 @@ class Nic
     # @param [Crystagiri::HTML] body
     # @return [Crystagiri::Tag]
     def first_sidebar_oc(body)
-      body.where_class("right_text_normal_td") { |t| return t }
-      raise HtmlException.new(tag="right_text_normal_td")
+      body.where_class(Nic::TAGS::SIDEBAR) { |t| return t }
+      raise HtmlException.new(tag=Nic::TAGS::SIDEBAR)
     end
 
     # Get sidebar occurence by index id
@@ -127,11 +122,11 @@ class Nic
     # @return [Crystagiri::Tag]
     def sidebar_oc(body : Crystagiri::HTML, index)
       i = 0
-      body.where_class("right_text_normal_td") do |tag|
+      body.where_class(Nic::TAGS::SIDEBAR) do |tag|
         return tag if i == index
         i += 1
       end 
-      raise HtmlException.new(tag="right_text_normal_td")
+      raise HtmlException.new(tag=Nic::TAGS::SIDEBAR)
     end
 
     # Extract new or latest domains from this source
