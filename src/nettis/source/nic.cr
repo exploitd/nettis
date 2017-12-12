@@ -94,14 +94,31 @@ module Nettis
     
       # xxx: Save image and process to ocr
       Nettis::Downloader.new(img.to_s, "/tmp/").download
-      w = whois_plain("/tmp/#{Nettis::Downloader::DEFAULT_WHOIS_IMG}")
-      w << domain
+      w = whois_main("/tmp/#{Nettis::Downloader::DEFAULT_WHOIS_IMG}", "bos") # => Better at detecting main information
+      w = emails(w, "/tmp/#{Nettis::Downloader::DEFAULT_WHOIS_IMG}", "eng") # => Better at detecting email/phone 
+
+      w << domain # => Add domain as last source
+
+      p w
     end
 
-    def whois_plain(image : String)
-      tmp = "/tmp/resized.png"
+    def whois_main(image : String, language : String)
+      tmp = "/tmp/resized_#{language}.png"
       Nettis::NOCR::Enhance.resize(image, 1000, 1000, tmp)
-      parser.whois_text(Nettis::NOCR::Read.from_image(tmp, "bos").to_s)
+
+      parser.whois_text(Nettis::NOCR::Read.from_image(tmp, language).to_s)
+    end
+
+    def emails(whois, image : String, language : String)
+      tmp = "/tmp/resized_#{language}.png"
+      Nettis::NOCR::Enhance.resize(image, 1000, 1000, tmp)
+
+      emails = parser.emails(Nettis::NOCR::Read.from_image(tmp, language).to_s)
+      emails.each do |e|
+        whois << e.string
+      end
+
+      whois
     end
 
     # Extract last five registered domains on project source. On `nic` it is
